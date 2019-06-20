@@ -18,6 +18,8 @@ docker run -idt --privileged=true --restart=always --name mysql-demo -p3309:3306
 
 docker run -idt --privileged=true --restart=always --name mysql-dev -p3307:3306  -v /home/docker/workspace/mysql-dev:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/dev:5.7
 
+
+
 docker exec -i mysql-dev sh -c 'exec mysql -uroot -padccadcc efs_fdp_v1' < efs_fdp_v1_20190617160604.sql
 
 
@@ -26,6 +28,15 @@ docker run -idt --privileged=true --restart=always --name mysql-demo -p3308:3306
 
 docker exec -i mysql-demo sh -c 'exec mysql -uroot -padccadcc efs_fdp_v1' < efs_fdp_v1_20190617160604.sql
 
+
+docker run -idt --privileged=true -v /etc/localtime:/etc/localtime --restart=always --name mysql-learning -p3310:3306  -v /home/docker/workspace/mysql-learning:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/demo:5.7
+
+docker run -idt --privileged=true -v /etc/localtime:/etc/localtime --restart=always --name mysql-dev -p3307:3306  -v /home/docker/workspace/mysql-dev:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/demo:5.7
+
+docker run -idt --privileged=true -v /etc/localtime:/etc/localtime --restart=always --name mysql-test -p3308:3306  -v /home/docker/workspace/mysql-test:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/demo:5.7
+
+
+docker run -idt --privileged=true -v /etc/localtime:/etc/localtime --restart=always --name mysql-demo -p3309:3306  -v /home/docker/workspace/mysql-demo:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/demo:5.7
 
 
 
