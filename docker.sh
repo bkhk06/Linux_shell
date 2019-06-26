@@ -22,6 +22,9 @@ docker run -idt --privileged=true --restart=always --name mysql-dev -p3307:3306 
 docker/mongo
 docker run -idt --privileged=true --restart=always --name mongo -p28017:27017  -v /home/docker_workspace/mongodb:/data/db  mongo:latest
 
+docker/redis
+docker run -idt --privileged=true --restart=always --name redis -p6479:6379  -v /home/docker_workspace/redis:/data  redis:latest redis-server --appendonly yes
+
 docker exec -i mysql-dev sh -c 'exec mysql -uroot -padccadcc efs_fdp_v1' < efs_fdp_v1_20190617160604.sql
 
 
