@@ -22,6 +22,10 @@ docker run -idt --privileged=true --restart=always --name mysql-dev -p3307:3306 
 docker/mongo
 docker run -idt --privileged=true --restart=always --name mongo -p28017:27017  -v /home/docker_workspace/mongodb:/data/db  mongo:latest
 
+docker run -idt --privileged=true --restart=always --name mongo-express -p 8981:8081 --link mongo:mongo mongo-express:latest
+
+docker run -idt --privileged=true --restart=always --name mongo-client -p 3100:3000 -e MONGO_URL=mongodb://192.168.11.102:22017/ mongoclient/mongoclient:latest
+
 docker/redis
 docker run -idt --privileged=true --restart=always --name redis -p6479:6379  -v /home/docker_workspace/redis:/data  redis:latest redis-server --appendonly yes
 
