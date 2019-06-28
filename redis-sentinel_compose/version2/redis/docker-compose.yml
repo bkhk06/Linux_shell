@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+  master:
+    image: redis
+    container_name: redis-cluster-master
+    #restart: always
+    ports:
+      - 6300:6379
+    volumes:
+      - "/home/docker_workspace/redis-cluster-sentinel_compose/version2/redis_master.conf:/etc/redis/redis.conf"
+    command: redis-server /etc/redis/redis.conf
+
+  slave1:
+    image: redis
+    container_name: redis-cluster-slave_1
+    ports:
+      - 6301:6379
+    volumes:
+      - "/home/docker_workspace/redis-cluster-sentinel_compose/version2/redis_slave_1.conf:/etc/redis/redis.conf"
+    command: redis-server --slaveof 192.168.11.103 6300
+
+  slave2:
+    image: redis
+    container_name: redis-cluster-slave_2
+    ports:
+      - 6302:6379
+    volumes:
+      - "/home/docker_workspace/redis-cluster-sentinel_compose/version2/redis_slave_2.conf:/etc/redis/redis.conf"
+    command: redis-server --slaveof 192.168.11.103 6300
+   
