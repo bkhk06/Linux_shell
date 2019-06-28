@@ -58,6 +58,40 @@ docker run -idt --privileged=true --restart=always --name mysql-demo -p3309:3306
 
 
 
+# 主库
+ docker run -it --name redis-master -d -p 6300:6300 redis redis-server --requirepass adccadcc --port 6300
+ docker exec -it redis-master bash
+ redis-cli -a adccadcc -p 6300
+ config set masterauth adccadcc
+ # 从库1
+ docker run -it --name redis-slave -d -p 6301:6301 redis redis-server --requirepass adccadcc --port 6301
+ docker exec -it redis-slave bash
+ redis-cli -a adccadcc -p 6301
+ slaveof 192.168.11.102 6300
+ config set masterauth adccadcc
+ 
+ # 从库2
+ docker run -it --name redis-slave2 -d -p 6302:6302 redis redis-server --requirepass adccadcc --port 6302
+ docker exec -it redis-slave2 bash
+ redis-cli -a adccadcc -p 6302
+ slaveof 192.168.11.102 6300
+ config set masterauth adccadcc
+
+
+# redis-sentinel实例1
+ docker run -it --name redis-sentinel1 -v /home/docker_workspace/redis-sentinel/sentinel1.conf:/usr/local/etc/redis/sentinel.conf -d redis /bin/bash
+ 
+ # redis-sentinel实例2
+ docker run -it --name redis-sentinel2 -v /home/docker_workspace/redis-sentinel/sentinel2.conf:/usr/local/etc/redis/sentinel.conf -d redis /bin/bash
+ 
+ # redis-sentinel实例3
+ docker run -it --name redis-sentinel3 -v /home/docker_workspace/redis-sentinel/sentinel3.conf:/usr/local/etc/redis/sentinel.conf -d redis /bin/bash
+
+
+
+
+
+
 
 
 
