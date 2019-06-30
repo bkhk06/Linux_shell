@@ -17,7 +17,7 @@ services:
       - 6301:6379
     volumes:
       - "./redis_slave_1.conf:/etc/redis/redis.conf"
-    command: redis-server /etc/redis/redis.conf --slaveof 192.168.0.102 6300
+    command: redis-server --replicaof 192.168.11.103 6300
 
   slave2:
     image: redis
@@ -26,5 +26,5 @@ services:
       - 6302:6379
     volumes:
       - "./redis_slave_2.conf:/etc/redis/redis.conf"
-    command: redis-server /etc/redis/redis.conf --slaveof 192.168.0.102 6300
+    command: redis-server --replicaof 192.168.11.103 6300
    

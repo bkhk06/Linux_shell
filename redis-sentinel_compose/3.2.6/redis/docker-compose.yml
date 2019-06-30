@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   master:
-    image: redis
+    image: redis:3.2.6
     container_name: redis-cluster-master
     #restart: always
     ports:
@@ -11,7 +11,7 @@ services:
     command: redis-server /etc/redis/redis.conf
 
   slave1:
-    image: redis
+    image: redis:3.2.6
     container_name: redis-cluster-slave_1
     ports:
       - 6301:6379
@@ -20,7 +20,7 @@ services:
     command: redis-server /etc/redis/redis.conf --slaveof 192.168.0.102 6300
 
   slave2:
-    image: redis
+    image: redis:3.2.6
     container_name: redis-cluster-slave_2
     ports:
       - 6302:6379
