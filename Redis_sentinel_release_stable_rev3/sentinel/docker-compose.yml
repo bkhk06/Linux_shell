@@ -6,6 +6,7 @@ services:
     ports:
       - 26001:26379
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
     command: redis-sentinel /usr/local/etc/redis/sentinel.conf
 
@@ -15,6 +16,7 @@ services:
     ports:
       - 26002:26379
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
     command: redis-sentinel /usr/local/etc/redis/sentinel.conf
 
@@ -24,5 +26,6 @@ services:
     ports:
       - 26003:26379
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf
     command: redis-sentinel /usr/local/etc/redis/sentinel.conf

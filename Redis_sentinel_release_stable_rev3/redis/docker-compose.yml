@@ -8,6 +8,7 @@ services:
       - 6300:6379
     volumes:
       - "./redis_master.conf:/etc/redis/redis.conf"
+      - /etc/localtime:/etc/localtime
     command: redis-server /etc/redis/redis.conf
 
   slave1:
@@ -17,6 +18,7 @@ services:
       - 6301:6379
     volumes:
       - "./redis_slave_1.conf:/etc/redis/redis.conf"
+      - /etc/localtime:/etc/localtime
     command: redis-server /etc/redis/redis.conf --slaveof 192.168.11.103 6300
 
   slave2:
@@ -25,6 +27,7 @@ services:
     ports:
       - 6302:6379
     volumes:
+      - /etc/localtime:/etc/localtime
       - "./redis_slave_2.conf:/etc/redis/redis.conf"
     command: redis-server /etc/redis/redis.conf --slaveof 192.168.11.103 6300
    
