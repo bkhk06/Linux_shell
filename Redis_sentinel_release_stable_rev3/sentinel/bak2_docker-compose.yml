@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  sentinel:
+    image: redis
+    container_name: redis-cluster-sentinel
+    #ports:
+    #  - 26001:26379
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+
