@@ -4,28 +4,28 @@ services:
     image: redis
     container_name: redis-cluster-sentinel_1
     ports:
-      - 26001:26379
+      - 26001:26001
     volumes:
       - /etc/localtime:/etc/localtime
       - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
-    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf --port 26001
 
   sentinel2:
     image: redis
     container_name: redis-cluster-sentinel_2
     ports:
-      - 26002:26379
+      - 26002:26002
     volumes:
       - /etc/localtime:/etc/localtime
       - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
-    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf --port 26002
 
   sentinel3:
     image: redis
     container_name: redis-cluster-sentinel_3
     ports:
-      - 26003:26379
+      - 26003:26003
     volumes:
       - /etc/localtime:/etc/localtime
       - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf
-    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf --port 26003
