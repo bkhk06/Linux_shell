@@ -4,6 +4,7 @@ services:
     image: redis
     container_name: redis-cluster-master
     #restart: always
+    network_mode: "host"
     ports:
       - 6300:6300
     volumes:
@@ -16,6 +17,7 @@ services:
     container_name: redis-cluster-slave_1
     ports:
       - 6301:6301
+    network_mode: "host"
     volumes:
       - "./redis_slave_1.conf:/etc/redis/redis.conf"
       - /etc/localtime:/etc/localtime
@@ -26,8 +28,8 @@ services:
     container_name: redis-cluster-slave_2
     ports:
       - 6302:6302
+    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime
       - "./redis_slave_2.conf:/etc/redis/redis.conf"
-    command: redis-server /etc/redis/redis.conf --port 6302 --slaveof 192.168.11.103 6300
-   
+    command: redis-server /etc/redis/redis.conf --port 6302 --slaveof 192.168.11.103 6300  
