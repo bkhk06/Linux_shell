@@ -16,6 +16,20 @@ scrape_configs:
           
   - job_name: linux2
     static_configs:
-      - targets: ['192.168.11.103:9100']
+      - targets: ['192.168.11.102:9100']
         labels:
           instance: sys2
+
+  - job_name: redis103_9121
+    static_configs:
+     - targets: ['192.168.11.103:9121']
+       labels:
+         instance: redis_9121
+
+
+  - job_name: mysql217_9104
+    static_configs:
+     - targets: ['192.168.11.217:9104']
+       labels:
+         instance: mysql217_9104
+

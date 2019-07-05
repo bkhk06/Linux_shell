@@ -1,0 +1,12 @@
+1860	Node Exporter Full
+7589	kafka_exporter
+763		redis
+2949	nginx
+2322	ElasticSearch
+2583	mongodb
+2129	windows node
+2351	consul
+
+ssh root@192.168.0.91 sudo -u jenkins /usr/bin/java -javaagent:/opt/jmx_expoter/jmx_prometheus_javaagent-0.3.1.jar=9950:/opt/jmx_expoter/config/tomcat.yaml -jar /home/jenkins/slave.jar
+
+
