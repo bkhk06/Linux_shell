@@ -27,7 +27,7 @@ docker run -idt --privileged=true --restart=always --name mongo-express -p 8981:
 docker run -idt --privileged=true --restart=always --name mongo-client -p 3100:3000 -e MONGO_URL=mongodb://192.168.11.102:22017/ mongoclient/mongoclient:latest
 
 docker/redis
-docker run -idt --privileged=true --restart=always --name redis -p6479:6379  -v /home/docker_workspace/redis:/data  redis:latest redis-server --appendonly yes
+docker run -idt --privileged=true --restart=always --name redis -p6479:6379  -v /etc/localtime:/etc/localtime   redis:latest redis-server 
 
 docker exec -i mysql-dev sh -c 'exec mysql -uroot -padccadcc efs_fdp_v1' < efs_fdp_v1_20190617160604.sql
 
