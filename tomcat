@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# /etc/init.d/catalina.sh
+# chkconfig: 345 63 37
+# description: catalina.sh servlet container.
+# processname: catalina.sh 5.14.1
+
+# Source function library.
+#. /etc/init.d/functions
+# source networking configuration.
+#. /etc/sysconfig/network
+
+#export JAVA_HOME=/usr/local/jdk1.6.0_45/
+export CATALINA_HOME=/usr/local/tomcat/
+case $1 in
+    start)
+        sh $CATALINA_HOME/bin/catalina.sh start
+    ;;
+    stop)
+        sh $CATALINA_HOME/bin/catalina.sh stop
+    ;;
+    status)
+        ppid=`ps -ef | grep tomcat-juli.jar | grep -v grep | grep -v /bin/sh|awk '{print $2}'`
+        if [ -z "$ppid" ]; then
+           echo "tomcat is not started..."
+           exit
+        else
+           echo "tomcat is running (pid $ppid)"
+           exit
+       fi
+    ;;
+    restart)
+        sh $CATALINA_HOME/bin/catalina.sh stop
+        sleep 1
+        sh $CATALINA_HOME/bin/catalina.sh start
+    ;;
+
+esac
+exit 0

@@ -1,0 +1,64 @@
+#!/bin/bash
+#chkconfig: 345 70 70
+#description: JBOSS Server
+. /etc/init.d/functions
+. /etc/profile
+
+RETVAL=$?
+
+#JBOSS_HOME="/appServer/atfm_JBOSS" #jboss安装目录
+
+case "$1" in
+
+start)
+  ppid=`ps -ef | grep crs-cluster | grep -v grep|grep Dprogram.name|awk '{print $2}'`  
+  if [ -z "$ppid" ]; then
+      ./$JBOSS_HOME/bin/crs-run.sh >>/dev/null 2>&1
+      echo "JBOSS-CRS is started..."
+      exit
+  else
+      echo "JBOSS-CRS is already running (pid $ppid)"
+      exit
+  fi
+;;
+
+status)
+  ppid=`ps -ef | grep crs-cluster | grep -v grep|grep Dprogram.name|awk '{print $2}'`
+  if [ -z "$ppid" ]; then
+      echo "JBOSS-CRS is not started..."
+	  exit
+  else
+      echo "JBOSS-CRS is running (pid $ppid)"
+      exit
+  fi
+;;
+
+stop)
+   ppid=`ps -ef | grep crs-cluster | grep -v grep|grep Dprogram.name|awk '{print $2}'`
+   if [ -z "$ppid" ]; then
+      echo "JBOSS-CRS is already stopped"
+	  exit
+   else
+      kill $ppid
+      echo "JBOSS-CRS is stoped(pid $ppid)"
+	  exit
+   fi
+;;
+restart)
+      $0 stop
+	  sleep 10
+      $0 start
+
+;;
+
+*)
+
+echo $"Usage: $0 {start|stop|restart|status}"
+
+exit 1
+
+;;
+
+esac
+
+exit $RETVAL

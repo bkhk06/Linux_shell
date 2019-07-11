@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Simple Redis init.d script conceived to work on Linux systems
+# as it does use of the /proc filesystem.
+
+### BEGIN INIT INFO
+# Provides:     redis_6379
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Redis data structure server
+# Description:          Redis data structure server. See https://redis.io
+### END INIT INFO
+
+PID=`ps -ef | grep "/usr/local/elasticsearch-6.4.2/lib" | grep -v grep | awk '{print $2}'`
+case "$1" in
+    start)
+        if [ -n "$PID" ]
+        then
+                echo "elasticsearch process $PID is already running or crashed"
+        else
+                echo "Starting elasticsearch server..."
+                me=`whoami`
+		if [ $me = "elk" ]
+		then
+			#sh /home/elk/elasticsearch_startup.sh &
+                        cd /usr/local/elasticsearch-6.4.2
+                        ./bin/elasticsearch -d
+		else
+			echo "$me has no privilege to start elasticsearch!, please switch to elk..."
+		fi
+        fi
+        ;;
+    status)
+	if [ -n "$PID" ] 
+	then
+		echo "elasticsearch process $PID process is already running or crashed"
+	else
+		echo "elasticsearch is not running!"
+	fi
+	;;
+    stop)
+        if [ -z "$PID" ]
+        then
+                echo "elasticsearch is not running!"
+        else
+                echo "Stopping ..."
+                kill -9 $PID
+                echo "elasticsearch stopped"
+        fi
+        ;;
+    *)
+        echo "Please use status, start or stop as first argument"
+        ;;
+esac
