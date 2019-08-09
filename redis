@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# /etc/init.d/activemq
+# chkconfig: 345 63 37
+# description: activemq servlet container.
+# processname: activemq 5.14.1
+
+# Source function library.
+#. /etc/init.d/functions
+# source networking configuration.
+#. /etc/sysconfig/network
+
+#export JAVA_HOME=/usr/local/jdk1.6.0_45/
+#export CATALINA_HOME=/home/AppServer/apache-activemq-5.10.2-efps/
+
+case $1 in
+    start)
+        service 6379_redis start
+    ;;
+    stop)
+        service 6379_redis stop
+    ;;
+    status)
+        ppid=`ps -ef | grep redis-server | grep -v grep | grep -v /bin/sh|awk '{print $2}'`
+  if [ -z "$ppid" ]; then
+      echo "Redis is not started..."
+      exit
+  else
+      echo "Redis is already running (pid $ppid)"
+      exit
+  fi
+    ;;
+    restart)
+        service 6379_redis stop
+        sleep 1
+        service 6379_redis start
+    ;;
+
+esac
+exit 0

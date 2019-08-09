@@ -23,6 +23,22 @@ docker run -idt --privileged=true --restart=always --name mysql-dev -p3307:3306 
 docker exec -i mysql-dev sh -c 'exec mysql -uroot -padccadcc efs_fdp_v1' < efs_fdp_v1_20190617160604.sql
 
 
+#####Superset
+docker run -idt --restart=always --name superset -p 8088:8088 -v /home/docker_workspace/superset:/home/superset amancevice/superset
+
+docker exec -it superset fabmanager create-admin --app superset
+
+docker exec -it superset superset db upgrade
+
+docker exec -it superset superset init
+
+docker exec -it superset superset runserver
+
+
+
+ 
+ 
+
 
 docker run -idt --privileged=true --restart=always --name mysql-demo -p3308:3306  -v /home/docker/workspace/mysql-demo:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=adccadcc mysql/demo:5.7
 
