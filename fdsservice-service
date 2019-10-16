@@ -1,0 +1,136 @@
+#!/bin/sh
+# ------------------------------------------------------------------------
+# FDSService Service
+# chkconfig:345 50 50
+# description:fdsservice-service
+# ------------------------------------------------------------------------
+
+FDSService_USER="root"
+service=`basename "$0"`
+
+#
+# Discover the FDSService_HOME from the location of this script.
+#
+if [ -z "$FDSService_HOME" ] ; then
+
+  ## resolve links - $0 may be a link to fdsservice's home
+  PRG="$0"
+
+  # need this for relative symlinks
+  dirname_prg=`dirname "$PRG"`
+
+  while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '.*/.*' > /dev/null; then
+      PRG="$link"
+    else
+      PRG=`dirname "$PRG"`"/$link"
+    fi
+  done
+
+  FDSService_HOME=`dirname "$PRG"`
+  cd "$FDSService_HOME"
+  export FDSService_HOME
+
+fi
+
+PID_FILE="${FDSService_HOME}/service.pid"
+
+status() {
+  if [ -f "${PID_FILE}" ] ; then
+    pid=`cat "${PID_FILE}"`
+    # check to see if it's gone...
+    ps -p ${pid} > /dev/null
+    if [ $? -eq 0 ] ; then
+      return 1
+    else
+      rm "${PID_FILE}"
+    fi
+  fi
+  return 0
+}
+
+stop() {
+  if [ -f "${PID_FILE}" ] ; then
+    pid=`cat "${PID_FILE}"`
+    kill $@ ${pid} > /dev/null
+  fi
+  for i in 1 2 3 4 5 ; do
+    status
+    if [ $? -eq 0 ] ; then
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Could not stop process ${pid}"
+  return 1
+}
+
+start() {
+  status
+  if [ $? -eq 1 ] ; then
+    echo "Already running."
+    return 1
+  fi
+
+  if [ -z "$FDSService_USER" -o `id -un` = "$FDSService_USER" ] ; then
+    nohup ${FDSService_HOME}/fdsservice-run > /dev/null 2> /dev/null &
+  else
+    sudo -n -u ${FDSService_USER} nohup ${FDSService_HOME}/fdsservice-run > /dev/null 2> /dev/null &
+  fi
+
+  echo $! > "${PID_FILE}"
+
+  # check to see if stays up...
+  sleep 1
+  status
+  if [ $? -eq 0 ] ; then
+    echo "Could not start ${service}"
+    return 1
+  fi
+  echo "${service} is now running (${pid})"
+  return 0
+}
+
+case $1 in
+  start)
+    echo "Starting ${service}"
+    start
+    exit $?
+  ;;
+
+  force-stop)
+    echo "Forcibly Stopping ${service}"
+    stop -9
+    exit $?
+  ;;
+
+  stop)
+    echo "Gracefully Stopping ${service}"
+    stop
+    exit $?
+  ;;
+
+  restart)
+    echo "Restarting ${service}"
+    stop -9
+    start
+    exit $?
+  ;;
+
+  status)
+    status
+    if [ $? -eq 0 ] ; then
+      echo "${service} is stopped"
+    else
+      echo "${service} is running (${pid})"
+    fi
+    exit 0
+  ;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart|force-stop|status}" >&2
+    exit 2
+  ;;
+esac

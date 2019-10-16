@@ -1,0 +1,40 @@
+#!/bin/bash
+#chkconfig: 345 70 70
+#description: Zookeeper Server
+. /etc/init.d/functions
+. /etc/profile
+servicedir=/app/efpsServer/bin
+files="efpsServer"
+callfile(){
+#call the sh file to execute the service file
+  for file in $files
+  do
+    if [ -f $servicedir/$file ]
+    then
+      if [ -x $servicedir/$file ]
+      then
+        chmod +x $servicedir/$file
+      fi
+      echo "$servicedir/$file $1"
+      $servicedir/$file $1
+    fi
+  done
+}
+case "$1" in
+  start)
+    callfile $1
+    ;;
+  stop)
+    callfile $1
+    ;;
+  status)
+    callfile $1
+    ;;
+  restart)
+    callfile $1
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart}"
+    exit 1
+esac
+exit $?
