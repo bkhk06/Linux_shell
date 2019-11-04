@@ -1,0 +1,9 @@
+#设置ACTIVEMQ_SUNJMX_START
+ACTIVEMQ_SUNJMX_START="$ACTIVEMQ_SUNJMX_START -Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=192.168.11.101 -Dcom.sun.management.jmxremote.port=2011 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+
+#设置ACTIVEMQ_OPTS_线程池
+ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS_MEMORY -Dorg.apache.activemq.UseDedicatedTaskRunner=false -Djava.util.logging.config.file=logging.properties -Djava.security.auth.login.config=$ACTIVEMQ_CONF/login.config"
+
+#设置ACTIVEMQ_OPTS_MEMORY
+ACTIVEMQ_OPTS_MEMORY="-Xms1G -Xmx3G"
+

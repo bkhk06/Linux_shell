@@ -1,0 +1,189 @@
+SELECT F.TABLESPACE_NAME,
+TO_CHAR ((T.TOTAL_SPACE - F.FREE_SPACE),'9,999,999') "USED (MB)",
+TO_CHAR (F.FREE_SPACE, '9,999,999') "FREE (MB)",
+TO_CHAR (T.TOTAL_SPACE, '9,999,999') "TOTAL (MB)",
+TO_CHAR ((ROUND ((F.FREE_SPACE/T.TOTAL_SPACE)*100)),'999')||' %' PER_FREE
+FROM
+( SELECT TABLESPACE_NAME,
+ROUND(SUM (BLOCKS*(SELECT VALUE/1024 FROM V$PARAMETER WHERE NAME = 'db_block_size')/1024)) FREE_SPACE
+FROM DBA_FREE_SPACE
+GROUP BY TABLESPACE_NAME
+) F,
+(
+SELECT TABLESPACE_NAME,
+ROUND (SUM (BYTES/1048576)) TOTAL_SPACE
+FROM DBA_DATA_FILES
+GROUP BY TABLESPACE_NAME
+) T
+WHERE F.TABLESPACE_NAME = T.TABLESPACE_NAME
+Order by 5;
+
+select tablespace_name,sum(bytes/1024/1024/1024),sum(maxbytes/1024/1024/1024) from dba_data_files
+where autoextensible='YES'
+group by tablespace_name;
+
+select * from dba_data_files
+
+select name,total_mb/1024,free_mb/1024 from v$asm_diskgroup
+
+select owner,segment_name, bytes/1024/1024/1024 "大小 （G）"from dba_segments 
+order by 3 desc 
+
+select * from dba_data_files
+
+alter tablespace iyd_data add datafile '+DATA/sensky/datafile/iyd_data20.dbf' size 100M autoextend on;
+
+select * from dba_part_tables
+where owner not in ('SYS','SYSTEM')
+
+
+
+
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM1' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM2' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM3' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM4' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM5' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM6' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM7' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM8' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM9' autoextend on;
+alter database datafile 'D:\ORACLE_DATA\ATFMSW\ATFM10' autoextend on;
+
+alter database datafile  'D:\ORACLE_DATA\ATFMSW\UNDOTBS02' autoextend on;
+alter database datafile  'D:\ORACLE_DATA\ATFMSW\UNDOTBS03' autoextend on;
+alter database datafile  'D:\ORACLE_DATA\ATFMSW\UNDOTBS04' autoextend on;
+
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM11' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM12' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM13' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM14' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM15' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM16' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM17' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM18' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM19' size 10G autoextend on;
+alter tablespace atfm add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM20' size 10G autoextend on;
+
+CHB,CHH,LKE,DER,GCR,CRK,YZR,GDC,HKE,CBJ,FZA,CBG,CGH/NONE
+select * from atfmsw.atfm_security_user t where t.username='zuckchb';
+
+
+
+#########################################
+SELECT DISTINCT
+	b.file_name,
+	b.tablespace_name,
+  b.bytes - sum(a.bytes) "已使用",
+	b.bytes
+FROM
+	dba_free_space A,
+	dba_data_files b
+WHERE
+	A .file_id = b.file_id
+AND b.tablespace_name = 'ATFM'
+group BY b.file_name,
+	b.tablespace_name,
+	b.bytes
+
+
+	
+	
+	
+	操作步骤
+?	登录数据库，检查各表空间使用率。
+SQL-> SELECT a.tablespace_name "表空间名",
+total / (1024 * 1024 * 1024) "表空间大小(G)",
+free / (1024 * 1024 * 1024) "表空间剩余大小(G)",
+(total - free) / (1024 * 1024 * 1024) "表空间使用大小(G)",
+round((total - free) / total, 4) * 100 "使用率 %"
+FROM (SELECT tablespace_name, SUM(bytes) free
+FROM dba_free_space
+GROUP BY tablespace_name) a,
+(SELECT tablespace_name, SUM(bytes) total
+FROM dba_data_files
+GROUP BY tablespace_name) b
+WHERE a.tablespace_name = b.tablespace_name ;
+?	核查数据文件目录结构、可扩展属性与大小。
+--查看表空间是否具有自动扩展的能力
+SQL->select 
+file_name,
+autoextensible 
+from dba_data_files 
+where tablespace_name='TablespaceName';
+
+--查看表数据文件情况
+SQL->SELECT b.file_name 物理文件名,
+b.tablespace_name 表空间名, 
+b.bytes / 1024 / 1024 大小M, 
+(b.bytes - SUM (NVL(A .bytes, 0))) / 1024 / 1024 已使用M, 
+substr ((b.bytes - SUM (NVL(A .bytes, 0))) / (b.bytes) * 100,1,5) 利用率 
+from dba_free_space A, 
+dba_data_files b 
+where A .file_id = b.file_id 
+group BY b.tablespace_name,b.file_name,b.bytes 
+order BY b.tablespace_name;
+?	确认数据文件所在目录有足够可扩展空间（如果是数据存放ASM，确认ASM组有足够空间供使用）。
+?	增加表空间数据文件，扩展表空间，修改新加数据文件属性为可扩展
+SQL->alter tablespace TablespaceName add datafile 'path/file_name' size 10G autoextend on next 1024M maxsize unlimited; --初始10G空间，每次扩展1024M，无限制扩展
+?	核对扩展后的表空间使用率，确保使用率降低
+SQL-> SELECT a.tablespace_name "表空间名",
+total / (1024 * 1024 * 1024) "表空间大小(G)",
+free / (1024 * 1024 * 1024) "表空间剩余大小(G)",
+(total - free) / (1024 * 1024 * 1024) "表空间使用大小(G)",
+round((total - free) / total, 4) * 100 "使用率 %"
+FROM (SELECT tablespace_name, SUM(bytes) free
+FROM dba_free_space
+GROUP BY tablespace_name) a,
+(SELECT tablespace_name, SUM(bytes) total
+FROM dba_data_files
+GROUP BY tablespace_name) b
+WHERE a.tablespace_name = b.tablespace_name ;
+
+
+
+
+SELECT
+  b.file_name,
+  b.tablespace_name,
+  b.bytes - sum(a.bytes) "已使用",
+  b.bytes
+FROM
+  dba_free_space A,
+  dba_data_files b
+WHERE
+  A .file_id = b.file_id
+AND b.tablespace_name = 'ATFM'
+group BY b.file_name,
+  b.tablespace_name,
+  b.bytes
+  
+  SELECT b.file_name 物理文件名,
+b.tablespace_name 表空间名, 
+b.bytes / 1024 / 1024 大小M, 
+(b.bytes - SUM (NVL(A .bytes, 0))) / 1024 / 1024 已使用M, 
+substr ((b.bytes - SUM (NVL(A .bytes, 0))) / (b.bytes) * 100,1,5) 利用率 
+from dba_free_space A, 
+dba_data_files b 
+where A .file_id = b.file_id 
+group BY b.tablespace_name,b.file_name,b.bytes 
+order BY b.tablespace_name;
+
+alter tablespace ATFM add datafile 'D:\ORACLE_DATA\ATFMSW\ATFM30' size 20G 
+autoextend on next 1024M maxsize unlimited;
+
+SELECT a.tablespace_name "表空间名",
+total / (1024 * 1024 * 1024) "表空间大小(G)",
+free / (1024 * 1024 * 1024) "表空间剩余大小(G)",
+(total - free) / (1024 * 1024 * 1024) "表空间使用大小(G)",
+round((total - free) / total, 4) * 100 "使用率 %"
+FROM (SELECT tablespace_name, SUM(bytes) free
+FROM dba_free_space
+GROUP BY tablespace_name) a,
+(SELECT tablespace_name, SUM(bytes) total
+FROM dba_data_files
+GROUP BY tablespace_name) b
+WHERE a.tablespace_name = b.tablespace_name ;
+
+
+
