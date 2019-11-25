@@ -1,0 +1,28 @@
+#!/bin/bash
+#chkconfig: 345 70 70
+#description: mq-cdm  Server
+. /etc/init.d/functions
+. /etc/profile
+
+
+#export JAVA_HOME=/usr/local/jdk1.6.0_45/
+export CATALINA_HOME=/home/AppServer/apache-activemq-5.10.2-cdm/
+
+case $1 in
+    start)
+        sh $CATALINA_HOME/bin/activemq start
+    ;;
+    stop)
+        sh $CATALINA_HOME/bin/activemq stop
+    ;;
+    status)
+        sh $CATALINA_HOME/bin/activemq status
+    ;;
+    restart)
+        sh $CATALINA_HOME/bin/activemq stop
+        sleep 1
+        sh $CATALINA_HOME/bin/activemq start
+    ;;
+
+esac
+exit 0
