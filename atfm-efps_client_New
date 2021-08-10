@@ -1,0 +1,71 @@
+#!/bin/bash
+#chkconfig: 345 70 70
+#description: JBOSS Server
+. /etc/init.d/functions
+. /etc/profile
+
+RETVAL=$?
+
+
+APP_HOME=/home/AppServer/cdm-efps-exchange-client
+APP_JAR=cdm-efps-exchange-client-chongqing-1.0-SNAPSHOT.jar
+EFPS_JAVA=/home/AppServer/jdk1.8.0_201
+
+
+case "$1" in
+
+start)
+  ppid=`ps -ef | grep $APP_JAR | grep -v grep | awk '{print $2}'`  
+  if [ -z "$ppid" ]; then
+      cd $APP_HOME
+      java -server -jar $APP_HOME/$APP_JAR &
+      pid=`ps -ef | grep $APP_JAR | grep -v grep | awk '{print $2}'`
+      echo "$APP_JAR ($pid) application started"
+      exit
+  else
+      echo "ZUTF EFPS Client is already running (pid $ppid)"
+      exit
+  fi
+;;
+
+status)
+  ppid=`ps -ef | grep $APP_JAR | grep -v grep | awk '{print $2}'` 
+  if [ -z "$ppid" ]; then
+      echo "EFPS Client is not started..."
+	  exit
+  else
+      echo "EFPS Client is running (pid $ppid)"
+      exit
+  fi
+;;
+
+stop)
+  ppid=`ps -ef | grep $APP_JAR | grep -v grep | awk '{print $2}'`  
+  if [ -z "$ppid" ]; then
+      echo "EFPS Client is already stopped"
+	  exit
+   else
+	  kill $ppid
+      echo "EFPS Client is stoped(pid $ppid)"
+	  exit
+   fi
+;;
+
+restart)
+      $0 stop
+	  sleep 10
+      $0 start
+
+;;
+
+*)
+
+echo $"Usage: $0 {start|stop|restart|status}"
+
+exit 1
+
+;;
+
+esac
+
+exit $RETVAL
